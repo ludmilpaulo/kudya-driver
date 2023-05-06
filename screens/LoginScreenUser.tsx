@@ -1,83 +1,65 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { Keyboard, Alert, TextInput, Image, StyleSheet, Text, View, TouchableOpacity, ToastAndroid } from "react-native";
+import React, { useContext, useState, useEffect } from "react";
+import {
+  Keyboard,
+  Alert,
+  TextInput,
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ToastAndroid,
+} from "react-native";
 import Screen from "../components/Screen";
 import colors from "../configs/colors";
+import { useDispatch, useSelector } from "react-redux";
 
+import { useNavigation } from "@react-navigation/native";
 
-import { useNavigation } from '@react-navigation/native';
+import { loginUser } from "../redux/slices/authSlice";
 
-import tailwind from 'tailwind-react-native-classnames';
+import tailwind from "tailwind-react-native-classnames";
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Updates from "expo-updates";
 
-
-import * as Updates from 'expo-updates';
-
-
-
-
-export default function LoginScreenUser({ navigation }) {
-
-
+export default function LoginScreenUser() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-   const [keyboardStatus, setKeyboardStatus] = useState(undefined);
+  const navigation = useNavigation<any>()
 
-  useEffect(() => {
-    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
-      setKeyboardStatus("Keyboard Shown");
-    });
-    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
-      setKeyboardStatus("Keyboard Hidden");
-    });
+  const dispatch = useDispatch();
 
-    return () => {
-      showSubscription.remove();
-      hideSubscription.remove();
-    };
-  }, []);
-
-
-
-
-
-const LoginUser = async() => {
+  const LoginUser = async () => {
     try {
-      let response = await fetch('https://www.sunshinedeliver.com/login/', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username : username,
-            password : password
-          })
-      })
-      //response = await response.json();
+      let response = await fetch("https://www.sunshinedeliver.com/login/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        }),
+      });
 
-     if (response.status == 200) {
-        let data = await response.json()
-        await AsyncStorage.setItem("authUser", JSON.stringify(data));
-        console.log('para array',data);
-        //dispatch(loginUser(JSON.parse(data)))
-        Updates.reloadAsync()
-        console.log(data);
+      if (response.status == 200) {
+        let data = await response.json();
+
+        dispatch(loginUser(data));
+
+        //  Updates.reloadAsync();
+
         return true;
+      } else {
+        let resp = await response.json();
+        alert("" + resp.non_field_errors);
       }
-      else {
-       let resp = await response.json()
-        alert("" +resp.non_field_errors)
-           console.log("err",resp);
-        }
-
-        }catch (e) {
-          console.log("alila",e);
-          alert(e)
-          //console.log("erro login", e)
-        }
-  }
+    } catch (e) {
+      alert(e);
+    }
+  };
 
   return (
     <Screen style={styles.container}>
@@ -87,55 +69,37 @@ const LoginUser = async() => {
         </View>
 
         <Text style={styles.wellcomeTo}>
-        Conecte-se {'\n'} <Text style={styles.brand}>à equipe de entrega de alimentos SD food</Text>
+          Conecte-se ao{"\n"} <Text style={styles.brand}>SD Kudya</Text>
         </Text>
 
-
         <View style={styles.form}>
+          <TextInput
+            style={styles.input}
+            placeholder="Seu Nome"
+            autoCapitalize={"none"}
+            value={username}
+            onChangeText={(text) => setUsername(text)}
+          />
 
-        <TextInput style={styles.input}
-              placeholder="Seu Nome"
-              autoCapitalize={'none'}
-              value={username}
-              onChangeText={(text) => setUsername(text)}
-              onSubmitEditing={Keyboard.dismiss}
-            />
+          <TextInput
+            style={styles.input}
+            placeholder="Senha"
+            autoCompleteType="off"
+            password={true}
+            value={password}
+            onChangeText={(text) => setPassword(text)}
+            secureTextEntry={true}
+            autoCapitalize={"none"}
+          />
 
-
-        <TextInput
-              style={styles.input}
-              placeholder="Senha"
-              onSubmitEditing={Keyboard.dismiss}
-              autoCompleteType="off"
-              password={true}
-            
-              value={password}
-              onChangeText={(text) => setPassword(text)}
-              secureTextEntry={true}
-              autoCapitalize={'none'}
-            />
-
-            <TouchableOpacity style={styles.containerbot}
-             onPress={LoginUser}
-            
-          >
-
-              <Text style={styles.vamosJuntos}>Conecte-se</Text>
-
+          <TouchableOpacity style={styles.containerbot} onPress={LoginUser}>
+            <Text style={styles.vamosJuntos}>Conecte-se</Text>
           </TouchableOpacity>
-
         </View>
 
-        <Text style={styles.join}
-         onPress={() => navigation.navigate("Signup")}
-        >
-        Não é um membro?{" "}
-          <Text
-
-            style={{ color: colors.primary }}
-          >
-          Inscrever-se
-          </Text>
+        <Text style={styles.join} onPress={() => navigation.navigate("Signup")}>
+          Não é um membro?{" "}
+          <Text style={{ color: colors.primary }}>Inscrever-se</Text>
         </Text>
       </View>
     </Screen>
@@ -144,8 +108,8 @@ const LoginUser = async() => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.white,
-    justifyContent: 'center'
+    // backgroundColor: colors.white,
+    justifyContent: "center",
   },
   wrapper: {
     paddingHorizontal: 20,
@@ -184,63 +148,59 @@ const styles = StyleSheet.create({
   },
 
   containertest: {
-    position: 'relative',
+    position: "relative",
   },
   input: {
-      borderColor: colors.medium,
-      backgroundColor: colors.light,
-      borderWidth: 1,
-      paddingHorizontal: 20,
-      paddingVertical: 15,
-      borderRadius: 10,
-      marginTop: 15
+    borderColor: colors.medium,
+    backgroundColor: colors.light,
+    borderWidth: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    borderRadius: 10,
+    marginTop: 15,
   },
   inputError: {
-      borderColor: colors.denger
+    borderColor: colors.denger,
   },
   icon: {
-      position: 'absolute',
-      right: 15,
-      top: 32
+    position: "absolute",
+    right: 15,
+    top: 32,
   },
   button: {
     borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
     padding: 15,
     marginVertical: 5,
-    marginTop: 15
+    marginTop: 15,
   },
   text: {
-      color: colors.white,
-      fontSize: 18,
-      // textTransform: 'uppercase',
-      fontWeight: '700'
+    color: colors.white,
+    fontSize: 18,
+    // textTransform: 'uppercase',
+    fontWeight: "700",
   },
 
   containerbot: {
     backgroundColor: "rgba(0,74,173,1)",
     borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
     padding: 15,
     marginVertical: 5,
-    marginTop: 15
+    marginTop: 15,
   },
   containertext: {
     width: 159,
-    height: 32
+    height: 32,
   },
   vamosJuntos: {
     color: colors.white,
     fontSize: 18,
     // textTransform: 'uppercase',
-    fontWeight: '700'
-  }
-
-
-
-
+    fontWeight: "700",
+  },
 });

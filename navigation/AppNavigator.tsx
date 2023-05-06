@@ -1,32 +1,31 @@
-import React, { useContext } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { useDispatch } from 'react-redux';
-import AuthNavigator from './AuthNavigator';
+import React, { useEffect, useState } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser, logoutUser, selectUser } from "../redux/slices/authSlice";
+import AuthNavigator from "./AuthNavigator";
 
-import { AuthContext } from '../redux/AuthContext';
+import HomeNavigator from "./HomeNavigator";
 
-//import HomeNavigator from './HomeNavigator';
+
+
+
+
+import { LogBox } from "react-native";
+LogBox.ignoreLogs(["new NativeEventEmitter"]);
 
 export default function AppNavigator() {
 
-     // Get auth state from context
-  const  {auth}  = useContext(AuthContext);
+ 
+  const dispatch = useDispatch();
 
+  const user = useSelector(selectUser);
 
-
-    console.log("usuario do redux", auth);
-
-   
-
-    return (
-        <NavigationContainer>
-            {auth ? (
-                <HomeNavigator />
-            ) : (
-                <AuthNavigator />
-            )}
-        </NavigationContainer>
-    )
-
-
+  return (
+    <NavigationContainer>
+      
+      {user ? <HomeNavigator /> 
+      : 
+      <AuthNavigator />}
+    </NavigationContainer>
+  );
 }
