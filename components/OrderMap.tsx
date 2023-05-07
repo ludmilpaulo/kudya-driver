@@ -19,7 +19,8 @@ import { useRoute } from '@react-navigation/native';
 import AppButton from '../components/AppButton';
 import AppHead from '../components/AppHead';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { selectUser } from "../redux/slices/authSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 
 const OrderMap = ({ navigation, route }) => {
@@ -36,6 +37,8 @@ const OrderMap = ({ navigation, route }) => {
     const [latitude, setLatitude ] = useState(0);
 
     const [ liveiveLocation, setLiveLocation ] = useState(0);
+
+    const user = useSelector(selectUser);
 
     const initialRegion = {
         latitude: latitude,                     
@@ -84,11 +87,10 @@ const OrderMap = ({ navigation, route }) => {
         setLongitude(location.coords.longitude);
         setLatitude(location.coords.latitude);
         setLiveLocation(location);
+        console.log("user location", location.coords)
         let userlive = location.coords;
 
-        const value = await AsyncStorage.getItem('authUser');
-        const tokenData = JSON.parse(value || {});
-        let tokenvalue = tokenData.token;
+   
 
         let response = await fetch('https://www.sunshinedeliver.com/api/driver/location/update/', {
               method: 'POST',
@@ -97,7 +99,7 @@ const OrderMap = ({ navigation, route }) => {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                access_token: tokenvalue,
+                access_token: user?.token,
                 location: userlive
               
               })
@@ -120,9 +122,7 @@ useEffect(() => {
  const mapRef = useRef(null)
 
   const completeOrder = async() => {
-    const value = await AsyncStorage.getItem('authUser');
-    const tokenData = JSON.parse(value || {});
-    let tokenvalue = tokenData.token;
+   
 
     let response = await fetch('https://www.sunshinedeliver.com/api/driver/order/complete/', {
           method: 'POST',
@@ -131,7 +131,7 @@ useEffect(() => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            access_token: tokenvalue,
+            access_token: user?.token,
             order_id : order_id
           })
       })

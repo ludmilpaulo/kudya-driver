@@ -29,7 +29,7 @@ const RestaurantMap = (props) => {
     const user = useSelector(selectUser);
 
 
-    const navigation = useNavigation();
+    const navigation = useNavigation<any>();
     const route = useRoute();
     const item = route.params.item;
 
