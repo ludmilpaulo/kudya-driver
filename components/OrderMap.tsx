@@ -100,7 +100,7 @@ const OrderMap = ({ navigation, route }) => {
               },
               body: JSON.stringify({
                 access_token: user?.token,
-                location: userlive
+                location: location?.coords
               
               })
           })
