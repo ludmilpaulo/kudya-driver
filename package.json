@@ -16,7 +16,7 @@
     "@react-navigation/native": "*",
     "@react-navigation/stack": "*",
     "@reduxjs/toolkit": "*",
-    "@types/react": "~18.0.27",
+
     "@types/react-dom": "~18.0.10",
     "axios": "*",
     "expo": "~48.0.15",

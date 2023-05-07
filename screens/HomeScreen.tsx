@@ -184,6 +184,7 @@ useEffect(() =>{
 // Geocoder.init("xxxxxxxxxxxxxxxxxxxxxxxxx", {language : "en"}); // set the language
 
 const getAddress = async() =>{
+  console.log('res address', restAddress)
     // Initialize the module (needs to be done only once)
     Geocoder.init("AIzaSyDn1X_BlFj-57ydasP6uZK_X_WTERNJb78"); // use a valid API key
 
