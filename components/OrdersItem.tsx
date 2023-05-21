@@ -1,18 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import { Image, Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import tailwind from "tailwind-react-native-classnames";
-import { Entypo } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
-import colors from "../configs/colors";
 
-import RestaurantMap from "../components/RestaurantMap";
 
-const OrdersItem = ({ resData, data }) => {
-  const navigation = useNavigation();
+const OrdersItem = ({ data  }: any) => {
+  const navigation = useNavigation<any>();
 
-  const handlePress = (item) => {
+  const handlePress = (item: any) => {
     navigation.navigate("RestaurantMap", {
       item: { ...item },
     });
@@ -20,7 +17,7 @@ const OrdersItem = ({ resData, data }) => {
 
   return (
     <View>
-      {data?.map((item, index) => (
+      {data?.map((item: any, index: React.Key | null | undefined) => (
         <OrdersItemCard
           key={index}
           item={item}
@@ -33,7 +30,7 @@ const OrdersItem = ({ resData, data }) => {
 
 export default OrdersItem;
 
-const OrdersItemCard = ({ item, onPress }) => {
+const OrdersItemCard = ({ item, onPress }: any) => {
   const url = "https://www.sunshinedeliver.com";
   const client = `${item.customer.avatar}`;
   const helloWorld = `${url}${client}`;

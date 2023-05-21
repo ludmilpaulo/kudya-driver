@@ -1,43 +1,29 @@
 import React, { useEffect, useState } from "react";
 import {
-  Image,
-  Text,
   ScrollView,
-  Alert,
   ActivityIndicator,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Platform,
   Vibration,
 } from "react-native";
 import HeaderTabs from "../components/HeaderTabs";
 import Screen from "../components/Screen";
 
-import Geolocation from "react-native-geolocation-service";
-import * as Location from "expo-location";
 import Geocoder from "react-native-geocoding";
 
-import { Entypo } from "@expo/vector-icons";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import SearchBar from "../components/SearchBar";
 
 import tailwind from "tailwind-react-native-classnames";
 
-import * as Device from "expo-device";
 
 import * as Notifications from "expo-notifications";
 
 import colors from "../configs/colors";
-import RestaurantMap from "../components/RestaurantMap";
 
 import OrdersItem from "../components/OrdersItem";
-import { logoutUser, selectUser } from "../redux/slices/authSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { selectUser } from "../redux/slices/authSlice";
+import { useSelector } from "react-redux";
+import { googleAPi } from "../configs/variable";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -47,16 +33,19 @@ Notifications.setNotificationHandler({
   }),
 });
 
+type MyType = {
+
+    latitude: number;
+    longitude: number;
+  };
+ 
 const HomeScreen = () => {
   const navigation = useNavigation<any>();
 
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("Delivery");
-  const [data, setData] = useState([]);
-  const [restaurant, setRestaurant] = useState(resData);
-
-  const [customer, setCustomer] = useState(customerData);
-
+  const [data, setData] = useState<any>([]);
+ 
   const [vibrar, setVibrar] = useState(undefined);
 
   const user = useSelector(selectUser);
@@ -96,13 +85,6 @@ const HomeScreen = () => {
         "https://www.sunshinedeliver.com/api/driver/orders/ready/"
       );
       const json = await response.json();
-
-      /*if ( json.orders == 200 ) {
-                 Vibration.vibrate(DURATION); 
-                
-              }*/
-
-      //
       setVibrar(json.orders);
       setData(json.orders);
     } catch (error) {
@@ -112,11 +94,11 @@ const HomeScreen = () => {
     }
   };
 
-  console.log("vibe==>", vibrar);
+
 
   const orderNotification = async () => {
     try {
-      if (vibrar?.length == 0) {
+      if ( (vibrar as unknown as any[]).length == 0) {
         setLoading(false);
       } else {
         Vibration.vibrate(DURATION);
@@ -163,7 +145,7 @@ const HomeScreen = () => {
   const [restlongitude, setRestLongitude] = useState(0);
   const [restlatitude, setRestLatitude] = useState(0);
 
-  const coordinates = {
+  const coordinates : MyType = {
     latitude: restlatitude,
     longitude: restlongitude,
   };
@@ -172,9 +154,9 @@ const HomeScreen = () => {
   // Geocoder.init("xxxxxxxxxxxxxxxxxxxxxxxxx", {language : "en"}); // set the language
 
   const getAddress = async () => {
-    console.log("res address", restAddress);
+  
     // Initialize the module (needs to be done only once)
-    Geocoder.init("AIzaSyDn1X_BlFj-57ydasP6uZK_X_WTERNJb78"); // use a valid API key
+    Geocoder.init(googleAPi); // use a valid API key
 
     try {
       // Search by address

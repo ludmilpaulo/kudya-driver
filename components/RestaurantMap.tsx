@@ -17,25 +17,28 @@ import * as Device from "expo-device";
 import * as Location from "expo-location";
 import Geocoder from "react-native-geocoding";
 
-import MapViewDirections from "react-native-maps-directions";
 
 import colors from "../configs/colors";
 
 import { useNavigation } from "@react-navigation/native";
 import { useRoute } from "@react-navigation/native";
 
-import AppButton from "../components/AppButton";
-import AppHead from "../components/AppHead";
+import { googleAPi } from "../configs/variable";
+import { selectUser } from "../redux/slices/authSlice";
+import { useSelector } from "react-redux";
 
-import { logoutUser, selectUser } from "../redux/slices/authSlice";
-import { useDispatch, useSelector } from "react-redux";
-
-const RestaurantMap = (props) => {
+const RestaurantMap = () => {
   const user = useSelector(selectUser);
 
   const navigation = useNavigation<any>();
   const route = useRoute();
-  const item = route.params.item;
+
+  //const{ item }= route.params && route.params;
+
+ // const { item } = route.params ?? { item: undefined };
+
+ const item = route.params?.item;
+
 
   const mapRef = useRef(null);
 
@@ -45,7 +48,6 @@ const RestaurantMap = (props) => {
   const [restlongitude, setRestLongitude] = useState(0);
   const [restlatitude, setRestLatitude] = useState(0);
 
-  const GOOGLE_MAPS_APIKEY = "AIzaSyDn1X_BlFj-57ydasP6uZK_X_WTERNJb78";
 
   const [location, setLocation] = useState({});
   const [errorMsg, setErrorMsg] = useState(null);
@@ -70,7 +72,7 @@ const RestaurantMap = (props) => {
   };
 
   // Initialize the module (needs to be done only once)
-  Geocoder.init("AIzaSyDn1X_BlFj-57ydasP6uZK_X_WTERNJb78"); // use a valid API key
+  Geocoder.init(googleAPi); // use a valid API key
   // With more options
   // Geocoder.init("xxxxxxxxxxxxxxxxxxxxxxxxx", {language : "en"}); // set the language
 
@@ -153,6 +155,7 @@ const RestaurantMap = (props) => {
 
   useEffect(() => {
     pickOrder();
+ 
   }, []);
 
   return (
@@ -167,7 +170,7 @@ const RestaurantMap = (props) => {
             <PolylineDirection
               origin={initialRegion}
               destination={coordinates}
-              apiKey={GOOGLE_MAPS_APIKEY}
+              apiKey={googleAPi}
               strokeWidth={4}
               strokeColor="#004AAD"
             />
@@ -213,6 +216,7 @@ const RestaurantMap = (props) => {
               paddingTop: 10,
               paddingBottom: 10,
               height: 100,
+              marginBottom:25,
               backgroundColor: "rgba(0,74,173,1)",
             }}
           >
