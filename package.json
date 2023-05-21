@@ -16,7 +16,6 @@
     "@react-navigation/native": "*",
     "@react-navigation/stack": "*",
     "@reduxjs/toolkit": "*",
-
     "@types/react-dom": "~18.0.10",
     "axios": "*",
     "expo": "~48.0.15",
@@ -33,7 +32,7 @@
     "formik": "*",
     "is_js": "*",
     "react": "18.2.0",
-    "react-native": "0.71.7",
+    "react-native": "0.71.8",
     "react-native-bouncy-checkbox": "*",
     "react-native-chart-kit": "*",
     "react-native-flash-message": "*",
@@ -55,6 +54,7 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@types/react": "~18.0.14",
+    "prettier": "2.8.8",
     "typescript": "^4.9.4"
   },
   "private": true

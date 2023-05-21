@@ -1,163 +1,145 @@
-import React, {  useState, useEffect, useRef, useContext } from 'react';
-import { View, Image, Text, TouchableOpacity } from 'react-native';
-import Screen from '../components/Screen'
-import tailwind from 'tailwind-react-native-classnames';
-import AppHead from '../components/AppHead';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState, useEffect, useRef, useContext } from "react";
+import { View, Image, Text, TouchableOpacity } from "react-native";
+import Screen from "../components/Screen";
+import tailwind from "tailwind-react-native-classnames";
+import AppHead from "../components/AppHead";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { AntDesign } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
+import { AntDesign } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 
-
-
-import { useNavigation } from '@react-navigation/native';
-import * as Updates from 'expo-updates';
-
-
+import { useNavigation } from "@react-navigation/native";
+import * as Updates from "expo-updates";
 
 import { logoutUser, selectUser } from "../redux/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const Account = () => {
-  
+  const auth = useSelector(selectUser);
 
+  const [username, setUsername] = useState("");
+  const [userPhoto, setUserPhoto] = useState("");
+  const [userPhone, setUserPhone] = useState("");
+  const [userAddress, setUserAddress] = useState("");
+  const [userId, setUserId] = useState(auth.user_id);
+  const navigation = useNavigation<any>();
 
-    const auth = useSelector(selectUser);
+  const url = "https://www.sunshinedeliver.com";
 
-    const [username, setUsername] = useState('')
-    const [userPhoto, setUserPhoto] = useState('')
-    const [userPhone, setUserPhone ] = useState('')
-    const [userAddress, setUserAddress ] = useState('')
-    const [ userId, setUserId ] = useState(auth.user_id)
-    const navigation = useNavigation<any>();
+  const customer_avatar = `${userPhoto}`;
+  const customer_image = `${url}${customer_avatar}`;
 
-    const url = 'https://www.sunshinedeliver.com';
-
-    const customer_avatar  = `${userPhoto}`;
-    const customer_image = `${url}${customer_avatar}`;
-
-
-
-const pickUser = async() => {
-   
-
-    let response = await fetch('https://www.sunshinedeliver.com/api/driver/profile/', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            user_id: userId
-          
-          })
-      })
-       .then((response) => response.json())
-       .then((responseJson) => {
-        
+  const pickUser = async () => {
+    let response = await fetch(
+      "https://www.sunshinedeliver.com/api/driver/profile/",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: userId,
+        }),
+      }
+    )
+      .then((response) => response.json())
+      .then((responseJson) => {
         setUserPhone(responseJson.customer_detais.phone);
         setUserAddress(responseJson.customer_detais.address);
         setUserPhoto(responseJson.customer_detais.avatar);
-        })  
-        .catch((error) => {
-          console.error(error);
-        });
-}
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
-    useEffect(() =>{
-        pickUser();
-       // setUserId(auth.user_id);
-        setUsername(auth.username);
-    }, [])
+  useEffect(() => {
+    pickUser();
+    // setUserId(auth.user_id);
+    setUsername(auth.username);
+  }, []);
 
-
-    const editProfile = async () => {
-
-         try {
-            navigation.navigate("UserProfile");
-        } catch (e) {
-            console.log(e);
-        }
-    } 
-
-
-     const orderProfile = async () => {
-
-         try {
-            navigation.navigate("Order_History");
-        } catch (e) {
-            console.log(e);
-        }
-    } 
-
-   
-    
-    const onLogout = async() => {       
-        try {
-            await AsyncStorage.removeItem('authUser');
-            Updates.reloadAsync();
-        } catch (e) {
-            console.log(e);
-        }
+  const editProfile = async () => {
+    try {
+      navigation.navigate("UserProfile");
+    } catch (e) {
+      console.log(e);
     }
+  };
 
-    
+  const orderProfile = async () => {
+    try {
+      navigation.navigate("Order_History");
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
+  const onLogout = async () => {
+    try {
+      await AsyncStorage.removeItem("authUser");
+      Updates.reloadAsync();
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
+  return (
+    <Screen style={tailwind`flex-1 bg-white`}>
+      <AppHead title={`Conta`} icon="settings-outline" />
+      <View style={tailwind`justify-center items-center`}>
+        <View style={tailwind`rounded-full overflow-hidden w-48 h-48 mt-4`}>
+          <Image source={{ uri: customer_image }} style={tailwind`w-48 h-48`} />
+        </View>
+        <Text style={tailwind`mt-4 text-3xl font-bold`}>{username}</Text>
+        <Text style={tailwind`text-lg text-indigo-900`}></Text>
+      </View>
+      <View style={tailwind`mx-4 border-t border-t-2 mt-5 border-gray-100`}>
+        <Text style={tailwind`text-gray-800 mt-2 text-lg mb-2`}>
+          Suas informações
+        </Text>
+        <SavedPlaces
+          title="address"
+          text={userAddress}
+          Icon={() => <AntDesign name="home" size={24} color="black" />}
+        />
+        <SavedPlaces
+          title="Telefone"
+          text={userPhone}
+          Icon={() => <AntDesign name="phone" size={24} color="black" />}
+        />
+      </View>
+      <View style={tailwind`mx-4 border-t border-t-2 mt-5 border-gray-100`}>
+        <Text style={tailwind`text-gray-800 mt-2 text-lg`}>Outras opções</Text>
 
-    return (
-        <Screen style={tailwind`flex-1 bg-white`}>
-            <AppHead title={`Conta`} icon="settings-outline" />
-            <View style={tailwind`justify-center items-center`}>
-                <View style={tailwind`rounded-full overflow-hidden w-48 h-48 mt-4`}>
-                    <Image source={{ uri: customer_image }} style={tailwind`w-48 h-48`} />
-                </View>
-                <Text style={tailwind`mt-4 text-3xl font-bold`}>{username}</Text>
-                <Text style={tailwind`text-lg text-indigo-900`}></Text>
-            </View>
-            <View style={tailwind`mx-4 border-t border-t-2 mt-5 border-gray-100`}>
-                <Text style={tailwind`text-gray-800 mt-2 text-lg mb-2`}>Suas informações</Text>
-                <SavedPlaces
-                    title="address"
-                    text={userAddress}
-                    Icon={() => <AntDesign name="home" size={24} color="black" />}
-                />
-                <SavedPlaces
-                    title="Telefone"
-                    text={userPhone}
-                    Icon={() => <AntDesign name="phone" size={24} color="black" />}
-                />
-            </View>
-            <View style={tailwind`mx-4 border-t border-t-2 mt-5 border-gray-100`}>
-                <Text style={tailwind`text-gray-800 mt-2 text-lg`}>Outras opções</Text>
-
-          {/*      <TouchableOpacity onPress={() => orderProfile()}>
+        {/*      <TouchableOpacity onPress={() => orderProfile()}>
                     <Text style={tailwind`text-green-900 mt-2`}>Histórico de pedidos</Text>
                 </TouchableOpacity>*/}
 
-                 <TouchableOpacity onPress={() => editProfile()}>
-                    <Text style={tailwind`text-green-900 mt-2`}>Edit o Seu Perfil</Text>
-                </TouchableOpacity>
+        <TouchableOpacity onPress={() => editProfile()}>
+          <Text style={tailwind`text-green-900 mt-2`}>Edit o Seu Perfil</Text>
+        </TouchableOpacity>
 
-             
-
-
-                <TouchableOpacity onPress={() => onLogout()}>
-                    <Text style={tailwind`text-green-900 mt-2`}>Sair</Text>
-                </TouchableOpacity>
-            </View>
-        </Screen>
-    );
-}
+        <TouchableOpacity onPress={() => onLogout()}>
+          <Text style={tailwind`text-green-900 mt-2`}>Sair</Text>
+        </TouchableOpacity>
+      </View>
+    </Screen>
+  );
+};
 
 export default Account;
 
 const SavedPlaces = ({ title, text, Icon }) => (
-    <TouchableOpacity style={tailwind`flex-row items-center my-3`} Press ={() => editProfile()}>
-        <Icon />
-        <View style={tailwind`ml-5`}>
-            <Text style={tailwind`text-gray-800`}>{title}</Text>
-            <Text style={tailwind`text-gray-600 text-xs mt-1`}>{text}</Text>
-        </View>
-    </TouchableOpacity>
-)
+  <TouchableOpacity
+    style={tailwind`flex-row items-center my-3`}
+    Press={() => editProfile()}
+  >
+    <Icon />
+    <View style={tailwind`ml-5`}>
+      <Text style={tailwind`text-gray-800`}>{title}</Text>
+      <Text style={tailwind`text-gray-600 text-xs mt-1`}>{text}</Text>
+    </View>
+  </TouchableOpacity>
+);

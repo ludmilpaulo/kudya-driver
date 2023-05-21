@@ -19,7 +19,7 @@ export default class BottomButton extends Component {
 
 BottomButton.propTypes = {
   onPressFunction: PropTypes.func.isRequired,
-  buttonText: PropTypes.string.isRequired
+  buttonText: PropTypes.string.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -30,11 +30,11 @@ const styles = StyleSheet.create({
     padding: 15,
     paddingLeft: 30,
     paddingRight: 30,
-    alignSelf: "center"
+    alignSelf: "center",
   },
   bottomButtonText: {
     fontSize: 20,
     color: "white",
-    fontWeight: "600"
-  }
+    fontWeight: "600",
+  },
 });

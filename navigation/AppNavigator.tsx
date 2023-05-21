@@ -6,26 +6,17 @@ import AuthNavigator from "./AuthNavigator";
 
 import HomeNavigator from "./HomeNavigator";
 
-
-
-
-
 import { LogBox } from "react-native";
 LogBox.ignoreLogs(["new NativeEventEmitter"]);
 
 export default function AppNavigator() {
-
- 
   const dispatch = useDispatch();
 
   const user = useSelector(selectUser);
 
   return (
     <NavigationContainer>
-      
-      {user ? <HomeNavigator /> 
-      : 
-      <AuthNavigator />}
+      {user ? <HomeNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
 }

@@ -26,7 +26,7 @@ export default function LoginScreenUser() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const navigation = useNavigation<any>()
+  const navigation = useNavigation<any>();
 
   const dispatch = useDispatch();
 
