@@ -110,6 +110,34 @@ const Delivery = (props: Props) => {
     return () => clearInterval(intervalId);
   }, []);
 
+
+  const completeOrder = async() => {
+   
+
+    let response = await fetch('https://www.sunshinedeliver.com/api/driver/order/complete/', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            access_token: user?.token,
+            order_id : order.id
+          })
+      })
+       .then((response) => response.json())
+        .then((responseJson) => {
+          console.log("JLO", responseJson)
+          setTimeout(() => {
+          navigation.navigate("SuccessScreen");
+        }, 1000)
+      })
+        .catch((error) => {
+          console.error(error);
+        });
+
+}
+
   return (
     <View style={tailwind`bg-blue-500 flex-1`}>
       <SafeAreaView style={tailwind`z-50`}>
@@ -117,8 +145,11 @@ const Delivery = (props: Props) => {
           <TouchableOpacity onPress={() => navigation.navigate("Home")}>
             <XCircleIcon color="#004AAD" size={30} />
           </TouchableOpacity>
-          <Text style={tailwind`text-lg font-light text-white`}>
-            Order Help
+
+          <Text 
+          onPress={completeOrder}
+          style={tailwind`text-lg font-bold text-white`}>
+            Concluir o Pedido
           </Text>
         </View>
 
@@ -171,23 +202,22 @@ const Delivery = (props: Props) => {
       </MapView>
 
       <SafeAreaView style={tailwind`flex-row items-center ml-0 bg-white h-28`}>
-        <ChatComponent
+        
+
+        <View style={tailwind`flex-1`}>
+        <Text style={tailwind`text-lg`}>{order?.customerData?.name}</Text>
+
+          <ChatComponent
           user="driver"
           userData={userData}
           accessToken={user?.token}
           orderId={order.id}
         />
-
-        <View style={tailwind`flex-1`}>
-          <Text style={tailwind`text-lg`}>{order.customerData.name}</Text>
-          <Text style={tailwind`text-gray-400`}>
-            {order.customerData.phone}
-          </Text>
         </View>
 
         <Text
           onPress={handlePhoneCall}
-          style={tailwind`text-blue-500 text-lg mr-5 font-bold`}
+          style={tailwind`text-blue-500 text-lg mr-2 font-bold`}
         >
           Ligar
         </Text>
