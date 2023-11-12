@@ -67,7 +67,7 @@ const UserProfile = () => {
   const userLocation = async () => {
     if (Platform.OS === "android" && !Device.isDevice) {
       alert(
-        "Oops, this will not work on Snack in an Android Emulator. Try it on your device!"
+        "Oops, this will not work on Snack in an Android Emulator. Try it on your device!",
       );
       return;
     }
@@ -93,7 +93,6 @@ const UserProfile = () => {
 
   useEffect(() => {
     userLocation();
-
   }, []);
 
   const [imageInfo, setImageInfo] = useState<ImageInfo | undefined>();
@@ -104,13 +103,12 @@ const UserProfile = () => {
       alert("Image selection was canceled");
     } else {
       // Handle the success case
-      const selectedAsset = (result as ImagePicker.ImagePickerSuccessResult).assets[0];
+      const selectedAsset = (result as ImagePicker.ImagePickerSuccessResult)
+        .assets[0];
       const { uri, mediaType } = selectedAsset;
       setImageInfo({ uri, type: mediaType, width: 0, height: 0 });
     }
   };
-  
-  
 
   const handleTakePhoto = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
@@ -119,11 +117,12 @@ const UserProfile = () => {
       return;
     }
 
-    const result: ImagePicker.ImagePickerResult = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+    const result: ImagePicker.ImagePickerResult =
+      await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
     handleImagePickerResult(result);
   };
 
@@ -134,33 +133,33 @@ const UserProfile = () => {
       return;
     }
 
-    const result: ImagePicker.ImagePickerResult = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    });
+    const result: ImagePicker.ImagePickerResult =
+      await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      });
     handleImagePickerResult(result);
   };
-
 
   const userUpdate = async () => {
     if (!imageInfo) {
       alert("Please select an image first");
       return;
     }
-  
+
     const { uri } = imageInfo;
-  
+
     try {
       const response = await fetch(uri);
-  
+
       if (!response.ok) {
         throw new Error("Failed to fetch image");
       }
-  
+
       const blob = await response.blob();
-  
+
       // Create FormData
       let formData = new FormData();
       formData.append("avatar", blob, "image.jpg");
@@ -169,9 +168,10 @@ const UserProfile = () => {
       formData.append("first_name", first_name);
       formData.append("last_name", last_name);
       formData.append("phone", phone);
-  
+
       // Make API request
-      const apiEndpoint = "https://www.sunshinedeliver.com/api/customer/profile/update/";
+      const apiEndpoint =
+        "https://www.sunshinedeliver.com/api/customer/profile/update/";
       const apiResponse = await fetch(apiEndpoint, {
         method: "POST",
         headers: {
@@ -180,7 +180,7 @@ const UserProfile = () => {
         },
         body: formData,
       });
-  
+
       // Handle API response
       if (apiResponse.ok) {
         const data = await apiResponse.json();
@@ -192,13 +192,14 @@ const UserProfile = () => {
         console.log("err", errorData);
       }
     } catch (error) {
-      console.error("Error converting image data or making API request:", error?.message);
+      console.error(
+        "Error converting image data or making API request:",
+        error?.message,
+      );
       // Provide additional information or handle the error as needed
       alert("Error updating profile. Please try again later.");
     }
   };
-  
-
 
   return (
     <>

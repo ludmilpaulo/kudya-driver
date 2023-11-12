@@ -8,33 +8,33 @@ import { selectBasketItems } from "../redux/slices/basketSlice";
 import { RootState } from "../redux/types";
 
 const CheckoutModal = ({ setModalVisible }: { setModalVisible: any }) => {
+  const allCartItems = useSelector((state: RootState) =>
+    selectBasketItems(state),
+  );
+  // Group items by resName
+  const groupedItems: Record<string, any[]> = {};
+  allCartItems.forEach((item) => {
+    const key = item.resName;
+    if (!groupedItems[key]) {
+      groupedItems[key] = [];
+    }
+    groupedItems[key].push(item);
+  });
 
-
-  const allCartItems = useSelector((state: RootState) => selectBasketItems(state));
-    // Group items by resName
-    const groupedItems: Record<string, any[]> = {};
-    allCartItems.forEach((item) => {
-      const key = item.resName;
-      if (!groupedItems[key]) {
-        groupedItems[key] = [];
-      }
-      groupedItems[key].push(item);
-    });
-  
-    // Calculate total price and count of items for each group
-    const groupedTotalPrices: Record<string, number> = {};
-    Object.keys(groupedItems).forEach((key) => {
-      groupedTotalPrices[key] = groupedItems[key].reduce(
-        (total, item) => total + item.price * item.quantity,
-        0
-      );
-    });
-  
-    const totalPrice = Object.values(groupedTotalPrices).reduce(
-      (total, price) => total + price,
-      0
+  // Calculate total price and count of items for each group
+  const groupedTotalPrices: Record<string, number> = {};
+  Object.keys(groupedItems).forEach((key) => {
+    groupedTotalPrices[key] = groupedItems[key].reduce(
+      (total, item) => total + item.price * item.quantity,
+      0,
     );
-  
+  });
+
+  const totalPrice = Object.values(groupedTotalPrices).reduce(
+    (total, price) => total + price,
+    0,
+  );
+
   const navigation = useNavigation<any>();
 
   const addOrder = () => {
@@ -53,16 +53,18 @@ const CheckoutModal = ({ setModalVisible }: { setModalVisible: any }) => {
           Detalhes do checkout
         </Text>
         <View style={tailwind`mb-5`}>
-        {Object.keys(groupedItems).map((resName: string) => (
-          <OrderItem
-            key={resName}
-            name={resName}
-            value={`${groupedTotalPrices[resName].toFixed(1)}Kz • (${groupedItems[resName].length || 0})`}
-            total={undefined}
-          />
-        ))}
-        <OrderItem name="Preço total" value={`${totalPrice}Kz`} total />
-      </View>
+          {Object.keys(groupedItems).map((resName: string) => (
+            <OrderItem
+              key={resName}
+              name={resName}
+              value={`${groupedTotalPrices[resName].toFixed(1)}Kz • (${
+                groupedItems[resName].length || 0
+              })`}
+              total={undefined}
+            />
+          ))}
+          <OrderItem name="Preço total" value={`${totalPrice}Kz`} total />
+        </View>
 
         <TouchableOpacity
           style={tailwind`py-3 px-10 self-center bg-black rounded-full`}

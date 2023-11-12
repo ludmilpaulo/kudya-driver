@@ -43,7 +43,7 @@ const OrderHistory = () => {
         body: JSON.stringify({
           access_token: user?.token,
         }),
-      }
+      },
     )
       .then((response) => response.json())
       .then((responseJson) => {
@@ -183,7 +183,7 @@ const OrderHistory = () => {
                           </View>
                         </View>
                       </View>
-                    )
+                    ),
                   )}
                 </View>
               </View>

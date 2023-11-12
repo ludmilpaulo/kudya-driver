@@ -3,7 +3,7 @@ import { View, Text, SafeAreaView } from "react-native";
 import * as Animatable from "react-native-animatable";
 import * as Progress from "react-native-progress";
 import { useNavigation } from "@react-navigation/native";
-import tailwind from 'tailwind-react-native-classnames';
+import tailwind from "tailwind-react-native-classnames";
 
 const SuccessScreen = () => {
   const navigation = useNavigation<any>();
@@ -15,7 +15,9 @@ const SuccessScreen = () => {
   }, []);
 
   return (
-    <SafeAreaView style={tailwind`bg-[#004AAD] flex-1 justify-center items-center`}>
+    <SafeAreaView
+      style={tailwind`bg-[#004AAD] flex-1 justify-center items-center`}
+    >
       <Animatable.Image
         source={require("../assets/orderLoading.gif")}
         animation="slideInUp"
@@ -28,10 +30,10 @@ const SuccessScreen = () => {
         iterationCount={1}
         style={tailwind`my-10 text-lg font-bold text-center text-Black`}
       >
-       Aguardando o Restaurante aceitar seu pedido!
+        Aguardando o Restaurante aceitar seu pedido!
       </Animatable.Text>
 
-      <Progress.Circle size={60} indeterminate={true} color= "#004AAD" />
+      <Progress.Circle size={60} indeterminate={true} color="#004AAD" />
     </SafeAreaView>
   );
 };

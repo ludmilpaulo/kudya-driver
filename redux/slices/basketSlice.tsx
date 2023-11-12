@@ -54,7 +54,9 @@ const basketSlice = createSlice({
     },
     updateBasket: (state, action: PayloadAction<BasketItem>) => {
       const updatedItem = action.payload;
-      const existingItem = state.items.find((item) => item.id === updatedItem.id);
+      const existingItem = state.items.find(
+        (item) => item.id === updatedItem.id,
+      );
 
       if (existingItem) {
         // Update the item based on your requirements
@@ -69,7 +71,8 @@ const basketSlice = createSlice({
   },
 });
 
-export const { addToBasket, removeFromBasket, updateBasket, clearBasket } = basketSlice.actions;
+export const { addToBasket, removeFromBasket, updateBasket, clearBasket } =
+  basketSlice.actions;
 
 export const selectBasketItems = (state: RootState) => state.basket.items;
 

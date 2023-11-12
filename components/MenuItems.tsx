@@ -38,7 +38,7 @@ const MenuItems = ({ resId, food, resName, resImage }: Meals) => {
         addToBasket({
           ...basketItem,
           quantity: basketItem.quantity + 1,
-        })
+        }),
       );
       console.log("Updated quantity:", basketItem.quantity + 1);
     } else {
@@ -54,42 +54,44 @@ const MenuItems = ({ resId, food, resName, resImage }: Meals) => {
           price: food.price,
           image: food.image,
           quantity: 1,
-        })
+        }),
       );
       console.log("Updated quantity: 1");
     }
   };
-  
 
   const removeItemFromBasket = () => {
     console.log("Removing item from basket:", food.id, quantity);
     const basketItem = items.find((item) => item.id === food.id);
-  
+
     if (basketItem && basketItem.quantity > 1) {
-      console.log("Item with quantity > 1, current quantity:", basketItem.quantity);
+      console.log(
+        "Item with quantity > 1, current quantity:",
+        basketItem.quantity,
+      );
       dispatch(
-        removeFromBasket(food.id) // Use removeFromBasket for items with quantity > 1
+        removeFromBasket(food.id), // Use removeFromBasket for items with quantity > 1
       );
     } else {
       console.log("Item with quantity 1, removing from basket");
       dispatch(removeFromBasket(food.id)); // Use removeFromBasket for items with quantity 1 as well
     }
   };
-  
-  
-  
 
   return (
     <>
-      <TouchableOpacity 
-       onPress={() => setIsPressed(!isPressed)}
-      style={tailwind`bg-white border p-4 border-gray-200`}>
+      <TouchableOpacity
+        onPress={() => setIsPressed(!isPressed)}
+        style={tailwind`bg-white border p-4 border-gray-200`}
+      >
         <View style={tailwind`flex-row`}>
           <View style={tailwind`flex-1 pr-2`}>
             <Text style={tailwind`text-lg mb-1`}>{food.name}</Text>
-            <Text style={tailwind`text-gray-400`}>{food.short_description}</Text>
+            <Text style={tailwind`text-gray-400`}>
+              {food.short_description}
+            </Text>
             <Text style={tailwind`text-gray-400 mt-2 font-bold`}>
-            {food.price} KZ
+              {food.price} KZ
             </Text>
           </View>
 
@@ -110,25 +112,25 @@ const MenuItems = ({ resId, food, resName, resImage }: Meals) => {
       </TouchableOpacity>
 
       <View style={tailwind`bg-white px-4`}>
-      {isPressed && (
-        <View style={tailwind`flex-row items-center ml-2 pb-3`}>
-          <TouchableOpacity
-            disabled={quantity === 0}
-            onPress={removeItemFromBasket}
-          >
-            <MinusCircleIcon
-              color={quantity > 0 ? "#004AAD" : "gray"}
-              size={40}
-            />
-          </TouchableOpacity>
+        {isPressed && (
+          <View style={tailwind`flex-row items-center ml-2 pb-3`}>
+            <TouchableOpacity
+              disabled={quantity === 0}
+              onPress={removeItemFromBasket}
+            >
+              <MinusCircleIcon
+                color={quantity > 0 ? "#004AAD" : "gray"}
+                size={40}
+              />
+            </TouchableOpacity>
 
-          <Text>{quantity}</Text>
+            <Text>{quantity}</Text>
 
-          <TouchableOpacity onPress={addItemToBasket}>
-            <PlusCircleIcon color="#004AAD" size={40} />
-          </TouchableOpacity>
-        </View>
-      )}
+            <TouchableOpacity onPress={addItemToBasket}>
+              <PlusCircleIcon color="#004AAD" size={40} />
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </>
   );

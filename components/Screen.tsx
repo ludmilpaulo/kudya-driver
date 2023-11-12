@@ -11,9 +11,7 @@ export default function Screen({
 }) {
   return (
     <SafeAreaView style={[styles.container, style]}>
-     
-        <View style={[styles.view, style]}>{children}</View>
-   
+      <View style={[styles.view, style]}>{children}</View>
     </SafeAreaView>
   );
 }

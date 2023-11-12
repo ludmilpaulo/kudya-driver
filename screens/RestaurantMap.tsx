@@ -1,5 +1,12 @@
 import React, { useRef, useState, useEffect } from "react";
-import { View, StyleSheet, Image, SafeAreaView, Text, TouchableOpacity } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Image,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import tailwind from "tailwind-react-native-classnames";
 
@@ -28,10 +35,7 @@ const RestaurantMap = () => {
 
   const [loadingOrder, setLoadingOrder] = useState(false);
 
-
-
   useEffect(() => {
-
     const fetchUserLocation = async () => {
       try {
         const location = await userLocation();
@@ -43,36 +47,39 @@ const RestaurantMap = () => {
 
           // Send location to your API
           const response = await fetch(
-            'https://www.sunshinedeliver.com/api/driver/location/update/',
+            "https://www.sunshinedeliver.com/api/driver/location/update/",
             {
-              method: 'POST',
+              method: "POST",
               headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
+                Accept: "application/json",
+                "Content-Type": "application/json",
               },
               body: JSON.stringify({
                 access_token: user?.token,
                 location: location,
               }),
-            }
+            },
           );
 
           // Handle the response
           if (response.ok) {
             const data = await response.json();
             // Check the data and take appropriate actions
-            console.log('Location update successful:', data);
+            console.log("Location update successful:", data);
           } else {
             // Handle error scenarios
-            console.error('Location update failed. HTTP status:', response.status);
+            console.error(
+              "Location update failed. HTTP status:",
+              response.status,
+            );
             const errorData = await response.json(); // if the server returns error details
-            console.error('Error details:', errorData);
+            console.error("Error details:", errorData);
           }
         } else {
-          console.error('User location is undefined.');
+          console.error("User location is undefined.");
         }
       } catch (error) {
-        console.error('Error fetching user location:', error);
+        console.error("Error fetching user location:", error);
       }
     };
 
@@ -89,40 +96,42 @@ const RestaurantMap = () => {
   }, []);
 
   useEffect(() => {
-    const pickOrder = async() => {
-        let response = await fetch('https://www.sunshinedeliver.com/api/driver/order/pick/', {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              access_token: user?.token,
-              order_id : orderId
-            })
+    const pickOrder = async () => {
+      let response = await fetch(
+        "https://www.sunshinedeliver.com/api/driver/order/pick/",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            access_token: user?.token,
+            order_id: orderId,
+          }),
+        },
+      )
+        .then((response) => response.json())
+        .then((responseJson) => {
+          alert(responseJson.status);
+
+          if (responseJson.error) {
+            setTimeout(() => {
+              setLoadingOrder(false);
+              alert(responseJson.error);
+              navigation.navigate("HomeScreen");
+            }, 1300);
+          } else {
+            setLoadingOrder(true);
+          }
         })
-         .then((response) => response.json())
-          .then((responseJson) => {
-            alert(responseJson.status);
-            
-     
-            if(responseJson.error){
-              setTimeout(() => {
-                setLoadingOrder(false);
-                 alert(responseJson.error);
-                navigation.navigate("HomeScreen");
-              }, 1300)}else{
-                  setLoadingOrder(true);
-              }
-            })
-  
-            .catch( error => {alert("Selecione apenas um restaurante")
-               navigation.navigate("CartScreen");
-              console.log(error)}
-              );
-  
-  
-    }
+
+        .catch((error) => {
+          alert("Selecione apenas um restaurante");
+          navigation.navigate("CartScreen");
+          console.log(error);
+        });
+    };
     if (order) {
       // Update state values based on the order
       setDestination(order.restaurant.address);
@@ -133,14 +142,16 @@ const RestaurantMap = () => {
       // You may need to set restLongitude and restLatitude based on order coordinates if available
     }
 
-    pickOrder()
+    pickOrder();
   }, [order]);
 
   return (
     <SafeAreaView style={tailwind`flex-1`}>
       <View style={tailwind`flex-1`}>
-        <Text style={tailwind`mt-10 text-white text-lg bg-blue-500 p-4 text-center`}>
-          Restaurante {order.restaurant.name} 
+        <Text
+          style={tailwind`mt-10 text-white text-lg bg-blue-500 p-4 text-center`}
+        >
+          Restaurante {order.restaurant.name}
         </Text>
         <View style={[tailwind`bg-blue-300 relative `, { flex: 1 }]}>
           <MapView
@@ -153,8 +164,6 @@ const RestaurantMap = () => {
             ref={mapRef}
             style={tailwind`h-full z-10`}
           >
-           
-
             {order && (
               <Marker
                 coordinate={{
@@ -190,14 +199,17 @@ const RestaurantMap = () => {
             )}
           </MapView>
         </View>
-        <View style={tailwind`w-full border-t-0 rounded-full pt-10 pb-10 bg-blue-500`}>
-  <TouchableOpacity onPress={() => navigation.navigate("OrderCartScreen")}>
-    <Text style={tailwind`text-white text-2xl text-center`}>
-      Retirar no restaurante
-    </Text>
-  </TouchableOpacity>
-</View>
-
+        <View
+          style={tailwind`w-full border-t-0 rounded-full pt-10 pb-10 bg-blue-500`}
+        >
+          <TouchableOpacity
+            onPress={() => navigation.navigate("OrderCartScreen")}
+          >
+            <Text style={tailwind`text-white text-2xl text-center`}>
+              Retirar no restaurante
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );

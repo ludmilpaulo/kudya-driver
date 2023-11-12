@@ -3,23 +3,23 @@ module.exports = function (api) {
   return {
     presets: [
       [
-        'module:metro-react-native-babel-preset',
+        "module:metro-react-native-babel-preset",
         {
           unstable_disableES6Transforms: true,
         },
       ],
       // 'module:metro-react-native-babel-preset',
       // Add the following preset for web support
-      'babel-preset-expo',
+      "babel-preset-expo",
     ],
     plugins: [
       [
-        'module-resolver',
+        "module-resolver",
         {
-          extensions: ['.tsx', '.ts', '.js', '.json'],
+          extensions: [".tsx", ".ts", ".js", ".json"],
         },
       ],
-      'react-native-reanimated/plugin',
+      "react-native-reanimated/plugin",
     ],
   };
 };

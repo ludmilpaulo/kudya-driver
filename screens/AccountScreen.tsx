@@ -42,7 +42,7 @@ const AccountScreen = () => {
         body: JSON.stringify({
           user_id: userId,
         }),
-      }
+      },
     )
       .then((response) => response.json())
       .then((responseJson) => {

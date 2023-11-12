@@ -6,8 +6,6 @@ import { Platform } from "react-native";
 import { useSelector } from "react-redux";
 import { selectUser } from "../redux/slices/authSlice";
 
-
-
 export const googleAPi = "AIzaSyDn1X_BlFj-57ydasP6uZK_X_WTERNJb78";
 
 export const apiUrl = "https://www.sunshinedeliver.com";
@@ -32,16 +30,10 @@ export const getOrder = async (endpoint: string) => {
   }
 };
 
-
-
-
-
-
-
 export const userLocation = async () => {
   if (Platform.OS === "android" && !Device.isDevice) {
     alert(
-      "Oops, this will not work on Snack in an Android Emulator. Try it on your device!"
+      "Oops, this will not work on Snack in an Android Emulator. Try it on your device!",
     );
     return;
   }
@@ -54,7 +46,4 @@ export const userLocation = async () => {
   let location = await Location.getCurrentPositionAsync({});
   return location.coords;
   //setLatitude(location.coords.latitude);
-
 };
-
-

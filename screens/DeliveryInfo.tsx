@@ -28,13 +28,19 @@ const DeliveryInfo = () => {
           <TouchableOpacity onPress={() => navigation.navigate("Home")}>
             <XIcon color="white" size={30} />
           </TouchableOpacity>
-          <Text style={tailwind`text-lg font-light text-white`}>Order Help</Text>
+          <Text style={tailwind`text-lg font-light text-white`}>
+            Order Help
+          </Text>
         </View>
 
-        <View style={tailwind`z-50 p-6 mx-5 my-2 bg-white rounded-md shadow-md`}>
+        <View
+          style={tailwind`z-50 p-6 mx-5 my-2 bg-white rounded-md shadow-md`}
+        >
           <View style={tailwind`flex-row justify-between`}>
             <View>
-              <Text style={tailwind`text-lg text-gray-400`}>Estimated Arrival</Text>
+              <Text style={tailwind`text-lg text-gray-400`}>
+                Estimated Arrival
+              </Text>
               <Text style={tailwind`text-4xl font-bold`}>45-55 Minutes</Text>
             </View>
             <Image
@@ -75,7 +81,9 @@ const DeliveryInfo = () => {
         />
       </MapView>
 
-      <SafeAreaView style={tailwind`flex-row items-center space-x-5 bg-white h-28`}>
+      <SafeAreaView
+        style={tailwind`flex-row items-center space-x-5 bg-white h-28`}
+      >
         <Image
           source={{
             uri: "https://links.papareact.com/wru",
@@ -87,7 +95,9 @@ const DeliveryInfo = () => {
           <Text style={tailwind`text-gray-400`}>Seu motorista</Text>
         </View>
 
-        <Text style={tailwind`text-[#004AAD] text-lg mr-5 font-bold`}>Ligar</Text>
+        <Text style={tailwind`text-[#004AAD] text-lg mr-5 font-bold`}>
+          Ligar
+        </Text>
       </SafeAreaView>
     </View>
   );

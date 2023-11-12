@@ -17,7 +17,7 @@ const locationSlice = createSlice({
   reducers: {
     setUserLocation: (
       state,
-      action: PayloadAction<{ latitude: number; longitude: number }>
+      action: PayloadAction<{ latitude: number; longitude: number }>,
     ) => {
       state.latitude = action.payload.latitude;
       state.longitude = action.payload.longitude;
