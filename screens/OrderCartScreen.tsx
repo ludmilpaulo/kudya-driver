@@ -39,6 +39,8 @@ const OrderCartScreen: React.FC<OrderCartScreenProps> = () => {
 
   const user = useSelector(selectUser);
 
+  console.log("driver order", order);
+
   const pickOrder = async () => {
     try {
       let response = await fetch(
@@ -126,12 +128,24 @@ const OrderCartScreen: React.FC<OrderCartScreenProps> = () => {
         </View>
       </ScrollView>
 
-      <AppButton
-        title="levar Para Client"
-        onPress={() => navigation.navigate("Delivery", { order, customerData })}
-        color="black"
-        // style={tailwind`mt-5`}
-      />
+      {order.status === "Entregue" ? (
+  <AppButton
+    title="Pedido Entrege"
+    onPress={() => navigation.navigate("Home")}
+    color="black"
+    // style={tailwind`mt-5`}
+  />
+) : (
+  <AppButton
+    title="Levar Para Cliente"
+    onPress={() => navigation.navigate("Delivery", { order, customerData })}
+    color="black"
+    // style={tailwind`mt-5`}
+  />
+)}
+
+
+      
 
       <Modal visible={modalVisible} animationType="slide" transparent={true}>
         {/* Assuming CheckoutModal component is properly implemented */}
