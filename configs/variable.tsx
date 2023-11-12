@@ -10,7 +10,7 @@ import { selectUser } from "../redux/slices/authSlice";
 
 export const googleAPi = "AIzaSyDn1X_BlFj-57ydasP6uZK_X_WTERNJb78";
 
-const apiUrl = "https://www.sunshinedeliver.com";
+export const apiUrl = "https://www.sunshinedeliver.com";
 
 export const fetchData = async (endpoint: string) => {
   try {
@@ -31,6 +31,8 @@ export const getOrder = async (endpoint: string) => {
     throw error;
   }
 };
+
+
 
 
 

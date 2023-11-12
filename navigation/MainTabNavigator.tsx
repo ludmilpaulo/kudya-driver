@@ -7,10 +7,10 @@ import TabCartButton from "../components/TabCartButton";
 import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 ///import BrowseScreen from "../screens/BrowseScreen";
-import CartScreen from "../screens/CartScreen";
+import CartScreen from "../screens/OrderCartScreen";
 //import GroceryScreen from "../screens/GroceryScreen";
 import AccountScreen from "../screens/AccountScreen";
-import Delivery from "../screens/Delivery";
+import OrderCartScreen from "../screens/OrderCartScreen";
 import OrderHistory from "../screens/OrderHistory";
 
 const Tab = createBottomTabNavigator();
@@ -40,8 +40,8 @@ const MainTabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Acompanhar"
-        component={Delivery}
+        name="A Caminho"
+        component={OrderCartScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="md-car" color={color} size={size} />

@@ -42,7 +42,7 @@ const HomeScreen = () => {
           setOrderAddress(address);
           });
         } else {
-          console.error('No orders found in the response.');
+         
         }
       } catch (error) {
         console.error('Error fetching order data:', error);

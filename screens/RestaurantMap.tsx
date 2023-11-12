@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect } from "react";
 import { View, StyleSheet, Image, SafeAreaView, Text, TouchableOpacity } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import tailwind from "tailwind-react-native-classnames";
-import MapViewDirections from '@react-native-maps-directions/native';
 
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { UserOrder } from "../configs/types";
@@ -27,7 +26,12 @@ const RestaurantMap = () => {
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
 
+  const [loadingOrder, setLoadingOrder] = useState(false);
+
+
+
   useEffect(() => {
+
     const fetchUserLocation = async () => {
       try {
         const location = await userLocation();
@@ -85,6 +89,40 @@ const RestaurantMap = () => {
   }, []);
 
   useEffect(() => {
+    const pickOrder = async() => {
+        let response = await fetch('https://www.sunshinedeliver.com/api/driver/order/pick/', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              access_token: user?.token,
+              order_id : orderId
+            })
+        })
+         .then((response) => response.json())
+          .then((responseJson) => {
+            alert(responseJson.status);
+            
+     
+            if(responseJson.error){
+              setTimeout(() => {
+                setLoadingOrder(false);
+                 alert(responseJson.error);
+                navigation.navigate("HomeScreen");
+              }, 1300)}else{
+                  setLoadingOrder(true);
+              }
+            })
+  
+            .catch( error => {alert("Selecione apenas um restaurante")
+               navigation.navigate("CartScreen");
+              console.log(error)}
+              );
+  
+  
+    }
     if (order) {
       // Update state values based on the order
       setDestination(order.restaurant.address);
@@ -94,6 +132,8 @@ const RestaurantMap = () => {
       setRestLatitude(-33.9214634);
       // You may need to set restLongitude and restLatitude based on order coordinates if available
     }
+
+    pickOrder()
   }, [order]);
 
   return (
@@ -113,13 +153,7 @@ const RestaurantMap = () => {
             ref={mapRef}
             style={tailwind`h-full z-10`}
           >
-            <MapViewDirections
-              origin={{ latitude, longitude }}
-              destination={{ latitude: restLatitude, longitude: restLongitude }}
-              apikey={'YOUR_API_KEY'}
-              strokeWidth={4}
-              strokeColor="#004AAD"
-            />
+           
 
             {order && (
               <Marker
@@ -156,14 +190,14 @@ const RestaurantMap = () => {
             )}
           </MapView>
         </View>
-        <TouchableOpacity
-          style={tailwind`w-full border-t-0 rounded-full pt-10 pb-10 h-10 bg-blue-500`}
-          onPress={() => navigation.navigate("CartScreen")}
-        >
-          <Text style={tailwind`w-full border-t-0 pt-1 pb-10 text-white text-4xl text-center`}>
-            Retirar no restaurante
-          </Text>
-        </TouchableOpacity>
+        <View style={tailwind`w-full border-t-0 rounded-full pt-10 pb-10 bg-blue-500`}>
+  <TouchableOpacity onPress={() => navigation.navigate("OrderCartScreen")}>
+    <Text style={tailwind`text-white text-2xl text-center`}>
+      Retirar no restaurante
+    </Text>
+  </TouchableOpacity>
+</View>
+
       </View>
     </SafeAreaView>
   );
