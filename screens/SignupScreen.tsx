@@ -16,7 +16,7 @@ export default function SignupScreen() {
 
   const onSignup = async () => {
     try {
-      let response = await fetch("https://www.sunshinedeliver.com/signup/", {
+      let response = await fetch('https://www.sunshinedeliver.com/signup/driver/', {
         method: "POST",
         headers: {
           Accept: "application/json",

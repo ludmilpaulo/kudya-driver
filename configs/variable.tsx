@@ -7,15 +7,6 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../redux/slices/authSlice";
 
 
-//const [longitude, setLongitude] = useState(0);
-//const [latitude, setLatitude] = useState(0);
-//const [location, setLocation] = useState({});
-
-//const [loading, setLoading] = useState(true);
-//const [loadingOrder, setLoadingOrder] = useState(false);
-
-export const user = useSelector(selectUser);
-
 
 export const googleAPi = "AIzaSyDn1X_BlFj-57ydasP6uZK_X_WTERNJb78";
 
@@ -30,6 +21,18 @@ export const fetchData = async (endpoint: string) => {
     throw error;
   }
 };
+
+export const getOrder = async (endpoint: string) => {
+  try {
+    const response = await axios.get(apiUrl + endpoint);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+};
+
+
 
 
 

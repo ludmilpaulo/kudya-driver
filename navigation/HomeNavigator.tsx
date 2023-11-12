@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import Delivery from "../screens/Delivery";
-import DetailsScreen from "../screens/DetailsScreen";
+import RestaurantMap from "../screens/RestaurantMap";
 import SuccessScreen from "../screens/SuccessScreen";
 import CheckoutScreen from "../screens/CheckoutScreen";
 import MainTabNavigator from "./MainTabNavigator";
@@ -23,7 +23,7 @@ export default function HomeNavigator() {
       }}
     >
       <Stack.Screen name="HomeScreen" component={MainTabNavigator} />
-      <Stack.Screen name="DetailsScreen" component={DetailsScreen} />
+      <Stack.Screen name="RestaurantMap" component={RestaurantMap} />
       <Stack.Screen name="UserProfile" component={UserProfile} />
       <Stack.Screen name="SuccessScreen" component={SuccessScreen} />
       <Stack.Screen name="CheckoutScreen" component={CheckoutScreen} />

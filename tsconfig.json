@@ -1,10 +1,10 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "types": ["react-native", "react-native-vector-icons"],
+    "types": ["react-native-vector-icons"],
     "strict": true,
-    "target": "es5",
-    "lib": ["ES2015", "dom"],
+    "target": "esnext",
+    "lib": ["ES2015", "dom"]
   },
   "exclude": ["node_modules"]
 }
