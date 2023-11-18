@@ -10,7 +10,7 @@ import {
 import tailwind from "tailwind-react-native-classnames";
 import AppButton from "../components/AppButton";
 import { useSelector } from "react-redux";
-import CheckoutModal from "../components/CheckoutModal";
+
 import { selectUser } from "../redux/slices/authSlice";
 import { OrderDetail, Customer, Restaurant, Order } from "../configs/types";
 import { useNavigation } from "@react-navigation/native";
@@ -145,12 +145,7 @@ const OrderCartScreen: React.FC<OrderCartScreenProps> = () => {
 )}
 
 
-      
 
-      <Modal visible={modalVisible} animationType="slide" transparent={true}>
-        {/* Assuming CheckoutModal component is properly implemented */}
-        <CheckoutModal setModalVisible={setModalVisible} />
-      </Modal>
     </SafeAreaView>
   );
 };

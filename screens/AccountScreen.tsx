@@ -11,7 +11,7 @@ import { logoutUser, selectUser } from "../redux/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 import { useNavigation } from "@react-navigation/native";
-import * as Updates from "expo-updates";
+
 
 const AccountScreen = () => {
   const user = useSelector(selectUser);

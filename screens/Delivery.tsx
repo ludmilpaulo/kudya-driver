@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
 import {
@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Image,
   Linking,
+  ActivityIndicator,
 } from "react-native";
 import { XCircleIcon } from "react-native-heroicons/outline";
 import * as Progress from "react-native-progress";
@@ -22,9 +23,12 @@ type Props = {};
 
 const Delivery = (props: Props) => {
   const navigation = useNavigation<any>();
+  const ref = useRef<MapView | null>(null);
 
-  const [latitude, setLatitude] = useState(0);
-  const [longitude, setLongitude] = useState(0);
+  const [userLatitude, setUserLatitude] = useState(0);
+  const [userLongitude, setUserLongitude] = useState(0);
+
+  const [loading, setLoading] = useState<boolean>(true);
 
   const mapRef = useRef(null);
 
@@ -33,6 +37,8 @@ const Delivery = (props: Props) => {
   const { order, customerData } = route.params || {};
   const user = useSelector(selectUser);
   const isDriver = !user?.is_customer;
+
+  console.log(order.address)
 
   let userData = user;
 
@@ -57,8 +63,8 @@ const Delivery = (props: Props) => {
 
         // Check if location is defined before sending the request
         if (location) {
-          setLatitude(location.latitude);
-          setLongitude(location.longitude);
+          setUserLatitude(location.latitude);
+          setUserLongitude(location.longitude);
 
           // Send location to your API
           const response = await fetch(
@@ -137,6 +143,35 @@ const Delivery = (props: Props) => {
         });
 
 }
+// Extract latitude and longitude from the order.address string
+const match = order.address ? order.address.match(/Latitude: (.*), Longitude: (.*)/) : null;
+const latitude = match ? parseFloat(match[1]) : 0;
+const longitude = match ? parseFloat(match[2]) : 0;
+
+const customerCoordinates = useMemo(() => {
+  return {
+    latitude,
+    longitude,
+  };
+}, [order.address]);
+
+useEffect(() => {
+  if (customerCoordinates) {
+    ref.current?.animateCamera({ center: customerCoordinates, zoom: 10 });
+    setLoading(false);
+  }
+}, [customerCoordinates]);
+
+let center = {
+  latitude: customerCoordinates ? customerCoordinates.latitude : 0,
+  longitude: customerCoordinates ? customerCoordinates.longitude : 0,
+  latitudeDelta: 0.005,
+  longitudeDelta: 0.005,
+};
+
+
+console.log(center)
+
 
   return (
     <View style={tailwind`bg-blue-500 flex-1`}>
@@ -159,7 +194,7 @@ const Delivery = (props: Props) => {
           <View style={tailwind`flex-row justify-between`}>
             <View>
               <Text style={tailwind`text-lg text-gray-400`}>
-                {customerData.name}
+               levar para  {customerData.name}
               </Text>
               <Text style={tailwind`text-4xl font-bold`}>45-55 Minutes</Text>
             </View>
@@ -169,39 +204,42 @@ const Delivery = (props: Props) => {
             />
           </View>
 
-          <Progress.Bar size={30} color="#004AAD" indeterminate={true} />
+          <Progress.Bar color="#004AAD" indeterminate={true} 
+          />
 
           <Text style={tailwind`mt-3 text-gray-500`}>{order.address}</Text>
         </View>
       </SafeAreaView>
-
-      <MapView
-        region={{
-          latitude: latitude,
-          longitude: longitude,
-          latitudeDelta: 0.005,
-          longitudeDelta: 0.005,
-        }}
-        style={tailwind`z-0 flex-1 -mt-10`}
-        ref={mapRef}
-      >
-        <Marker
-          coordinate={{
-            latitude: latitude,
-            longitude: longitude,
+      {loading ? (
+        <ActivityIndicator size="large" color="#004AAD" />
+      ) : center ? (
+        <View style={[tailwind`bg-blue-300 relative`, { height: 350 }]}>
+        <MapView
+          ref={ref}
+          region={{
+            ...center
           }}
-          title={customerData.name}
-          identifier="region"
-          anchor={{ x: 0.5, y: 0.5 }}
+          style={tailwind`h-full w-full z-10`}
         >
-          <Image
-            source={{ uri: `${apiUrl}${customerData.avatar}` || "" }}
-            style={tailwind`w-8 h-8 p-4 ml-5 bg-gray-300 rounded-full`}
-          />
-        </Marker>
-      </MapView>
+          <Marker
+            coordinate={{
+              latitude: customerCoordinates ? customerCoordinates?.latitude : 0,
+              longitude: customerCoordinates ? customerCoordinates?.longitude : 0,
+            }}
+            title={customerData.name}
+            identifier="region"
+            anchor={{ x: 0.5, y: 0.5 }}
+          >
+            <Image
+              source={{ uri: `${apiUrl}${customerData.avatar}` || "" }}
+              style={tailwind`w-8 h-8 p-4 ml-5 bg-gray-300 rounded-full`}
+            />
+          </Marker>
+        </MapView>
+        </View>
+      ) : null}
 
-      <SafeAreaView style={tailwind`flex-row items-center ml-0 bg-white h-28`}>
+      <SafeAreaView style={tailwind`flex-row items-center ml-0 bg-white`}>
         
 
         <View style={tailwind`flex-1`}>

@@ -1,10 +1,6 @@
 import React, { ReactNode, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser } from "../redux/slices/authSlice";
-import {
-  selectTotalItems,
-  selectTotalPrice,
-} from "../redux/slices/basketSlice";
 
 import { View, Text, Image, TouchableOpacity } from "react-native";
 
