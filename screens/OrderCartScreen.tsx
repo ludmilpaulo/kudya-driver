@@ -1,45 +1,23 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  Modal,
-  Image,
-  SafeAreaView,
-  ScrollView,
-} from "react-native";
+import { View, Text, Image, SafeAreaView, ScrollView } from "react-native";
 import tailwind from "tailwind-react-native-classnames";
 import AppButton from "../components/AppButton";
 import { useSelector } from "react-redux";
-
 import { selectUser } from "../redux/slices/authSlice";
 import { OrderDetail, Customer, Restaurant, Order } from "../configs/types";
 import { useNavigation } from "@react-navigation/native";
 import { apiUrl } from "../configs/variable";
 
-interface OrderCartScreenProps {
-  // Add any props if needed
-}
-interface OrderDetailCheckout {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  sub_total: number;
-}
+interface OrderCartScreenProps {}
 
 const OrderCartScreen: React.FC<OrderCartScreenProps> = () => {
   const navigation = useNavigation<any>();
-  const [modalVisible, setModalVisible] = useState(false);
-  const [customerData, setCustomerData] = useState<Customer>({});
-  const [restaurantData, setRestaurantData] = useState<Restaurant>({});
+  const [customerData, setCustomerData] = useState<Customer | undefined>(undefined);
+  const [restaurantData, setRestaurantData] = useState<Restaurant | undefined>(undefined);
   const [orderData, setOrderData] = useState<OrderDetail[]>([]);
-  const [order, setOrder] = useState<Order>({});
-
-  const url = "https://www.sunshinedeliver.com";
+  const [order, setOrder] = useState<Order | undefined>();
 
   const user = useSelector(selectUser);
-
-  console.log("driver order", order);
 
   const pickOrder = async () => {
     try {
@@ -56,12 +34,12 @@ const OrderCartScreen: React.FC<OrderCartScreenProps> = () => {
           }),
         },
       );
-
+  
       if (response.ok) {
         let responseJson = await response.json();
-        setCustomerData(responseJson.order.customer);
-        setRestaurantData(responseJson.order.restaurant);
-        setOrderData(responseJson.order.order_details);
+        setCustomerData(responseJson.order?.customer);
+        setRestaurantData(responseJson.order?.restaurant);
+        setOrderData(responseJson.order?.order_details || []);
         setOrder(responseJson.order);
       } else {
         console.error("Error fetching order:", response.status);
@@ -70,6 +48,7 @@ const OrderCartScreen: React.FC<OrderCartScreenProps> = () => {
       console.error("Error fetching order:", error);
     }
   };
+  
 
   useEffect(() => {
     pickOrder();
@@ -85,12 +64,12 @@ const OrderCartScreen: React.FC<OrderCartScreenProps> = () => {
         style={tailwind`bg-white p-4 mb-4 rounded-md shadow-md flex-row items-center`}
       >
         <View style={tailwind`flex-1`}>
-          <Text>Nome:: {customerData.name}</Text>
-          <Text>Telefone: {customerData.phone}</Text>
-          <Text>Endereço: {order?.address}</Text>
+          <Text>Nome: {customerData?.name}</Text>
+          <Text>Telefone: {customerData?.phone}</Text>
+          <Text>Endereço: {order?.address || ""}</Text>
         </View>
         <Image
-          source={{ uri: `${apiUrl}${customerData.avatar}` || "" }}
+          source={{ uri: `${apiUrl}${customerData?.avatar}` || "" }}
           style={tailwind`w-16 h-full rounded-full mr-2`}
         />
       </View>
@@ -99,9 +78,9 @@ const OrderCartScreen: React.FC<OrderCartScreenProps> = () => {
         Informações sobre restaurantes
       </Text>
       <View style={tailwind`bg-white p-4 mb-4 rounded-md shadow-md`}>
-        <Text>Nome:: {restaurantData.name}</Text>
-        <Text>Telefone: {restaurantData.phone}</Text>
-        <Text>Endereço: {restaurantData.address}</Text>
+        <Text>Nome: {restaurantData?.name}</Text>
+        <Text>Telefone: {restaurantData?.phone}</Text>
+        <Text>Endereço: {restaurantData?.address}</Text>
       </View>
 
       <Text style={tailwind`text-lg font-bold mb-4`}>Detalhes do Pedido</Text>
@@ -109,7 +88,7 @@ const OrderCartScreen: React.FC<OrderCartScreenProps> = () => {
       <ScrollView>
         <View style={tailwind`bg-white p-4 rounded-md shadow-md`}>
           <Text style={tailwind`text-lg font-bold mb-4`}>
-            Pedido Número {order.id}
+            Pedido Número {order?.id}
           </Text>
           {orderData.map((item) => (
             <View
@@ -128,24 +107,19 @@ const OrderCartScreen: React.FC<OrderCartScreenProps> = () => {
         </View>
       </ScrollView>
 
-      {order.status === "Entregue" ? (
-  <AppButton
-    title="Pedido Entrege"
-    onPress={() => navigation.navigate("Home")}
-    color="black"
-    // style={tailwind`mt-5`}
-  />
-) : (
-  <AppButton
-    title="Levar Para Cliente"
-    onPress={() => navigation.navigate("Delivery", { order, customerData })}
-    color="black"
-    // style={tailwind`mt-5`}
-  />
-)}
-
-
-
+      {order?.status === "Entregue" ? (
+        <AppButton
+          title="Pedido Entrege"
+          onPress={() => navigation.navigate("Home")}
+          color="black"
+        />
+      ) : (
+        <AppButton
+          title="Levar Para Cliente"
+          onPress={() => navigation.navigate("Delivery", { order, customerData })}
+          color="black"
+        />
+      )}
     </SafeAreaView>
   );
 };

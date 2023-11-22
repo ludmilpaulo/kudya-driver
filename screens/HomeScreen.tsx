@@ -116,37 +116,36 @@ const HomeScreen = () => {
       }
     };
 
-    const fetchDataInterval = 3000; // 3 seconds
-    const orderNotificationInterval = 3000; // 3 seconds
-  
-    const fetchDataIntervalId = setInterval(() => {
-      fetchDataFromOrderEndpoint();
-    }, fetchDataInterval);
-  
-    const orderNotificationIntervalId = setInterval(() => {
-      orderNotification();
-    }, orderNotificationInterval);
-  
-    return () => {
-      // Clear both intervals before component unmounts
-      clearInterval(fetchDataIntervalId);
-      clearInterval(orderNotificationIntervalId);
-    };
+  const fetchDataInterval = 30000; // 30 seconds
+const orderNotificationInterval = 30000; // 30 seconds
+
+const fetchDataIntervalId = setInterval(() => {
+  fetchDataFromOrderEndpoint();
+}, fetchDataInterval);
+
+const orderNotificationIntervalId = setInterval(() => {
+  orderNotification();
+}, orderNotificationInterval);
+
+return () => {
+  // Clear both intervals before component unmounts
+  clearInterval(fetchDataIntervalId);
+  clearInterval(orderNotificationIntervalId);
+};
   }, []); 
 
   const orderNotification = async () => {
-
     try {
-      if ( vibrar?.length == 0 ){
-       setLoading(false)
-      }
-      else{
+      // Check if there are new orders to trigger vibration
+      if (vibrar.length > 0) {
         Vibration.vibrate(DURATION);
+      } else {
+        setLoading(false);
       }
-   } catch (e) {
-       console.log(e);
-   }
-} 
+    } catch (e) {
+      console.log(e);
+    }
+  }; 
 
   return (
     <SafeAreaView>

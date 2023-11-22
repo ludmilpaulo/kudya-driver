@@ -15,7 +15,7 @@ import tailwind from "tailwind-react-native-classnames";
 
 
 import colors from "../configs/colors";
-import { googleAPi } from "../configs/variable";
+import { apiUrl, googleAPi } from "../configs/variable";
 
 import * as ImagePicker from "expo-image-picker";
 
@@ -172,7 +172,7 @@ const UserProfile = () => {
       formData.append("phone", phone);
   
       // Make API request
-      const apiEndpoint = "https://www.sunshinedeliver.com/api/customer/profile/update/";
+      const apiEndpoint = `${apiUrl}/api/driver/profile/update/`;
   
       console.log("Sending API request to:", apiEndpoint);
   

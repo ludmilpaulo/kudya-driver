@@ -9,6 +9,7 @@ import {
   Image,
   Linking,
   ActivityIndicator,
+  Modal,
 } from "react-native";
 import { XCircleIcon } from "react-native-heroicons/outline";
 import * as Progress from "react-native-progress";
@@ -24,6 +25,7 @@ type Props = {};
 const Delivery = (props: Props) => {
   const navigation = useNavigation<any>();
   const ref = useRef<MapView | null>(null);
+  const [counter, setCounter] = useState(0);
 
   const [userLatitude, setUserLatitude] = useState(0);
   const [userLongitude, setUserLongitude] = useState(0);
@@ -38,7 +40,7 @@ const Delivery = (props: Props) => {
   const user = useSelector(selectUser);
   const isDriver = !user?.is_customer;
 
-  console.log(order.address)
+  const [isChatModalVisible, setChatModalVisible] = useState(false);
 
   let userData = user;
 
@@ -118,8 +120,6 @@ const Delivery = (props: Props) => {
 
 
   const completeOrder = async() => {
-   
-
     let response = await fetch('https://www.sunshinedeliver.com/api/driver/order/complete/', {
           method: 'POST',
           headers: {
@@ -239,19 +239,32 @@ console.log(center)
         </View>
       ) : null}
 
-      <SafeAreaView style={tailwind`flex-row items-center ml-0 bg-white`}>
-        
-
+<SafeAreaView
+        style={[
+          tailwind`flex-row items-center bg-white h-32`,
+          { position: 'absolute', bottom: 0, width: '100%' },
+        ]}
+      >
         <View style={tailwind`flex-1`}>
-        <Text style={tailwind`text-lg`}>{order?.customerData?.name}</Text>
+          <Text style={tailwind`text-lg`}>{order?.customerData?.name}</Text>
 
+          <TouchableOpacity
+            onPress={() => setChatModalVisible(true)}
+            style={tailwind`text-blue-500 text-lg mr-2 font-bold`}
+          >
+           <Text> Abrir Chat</Text>
+          </TouchableOpacity>
+
+        
           <ChatComponent
-          user="driver"
-          userData={userData}
-          accessToken={user?.token}
-          orderId={order.id}
-        />
-        </View>
+            user="driver"
+            userData={userData}
+            accessToken={user?.token}
+            orderId={order?.id}
+            onClose={() => setChatModalVisible(false)}
+            isChatModalVisible={isChatModalVisible} // Pass the boolean value here
+          />
+         
 
         <Text
           onPress={handlePhoneCall}
@@ -259,6 +272,9 @@ console.log(center)
         >
           Ligar
         </Text>
+        </View>
+
+
       </SafeAreaView>
     </View>
   );
